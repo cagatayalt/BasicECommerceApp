@@ -1,17 +1,16 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
-    id 'kotlin-android-extensions'
-
 }
 
 android {
-    compileSdk 32
+    namespace 'com.cagatayalt.github.simpleecommerceapp'
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.cagatayalt.github.simpleecommerceapp"
         minSdk 21
-        targetSdk 32
+        targetSdk 34
         versionCode 1
         versionName "1.0"
 
@@ -30,6 +29,9 @@ android {
     }
     kotlinOptions {
         jvmTarget = '1.8'
+    }
+    buildFeatures {
+        viewBinding true
     }
 }
 

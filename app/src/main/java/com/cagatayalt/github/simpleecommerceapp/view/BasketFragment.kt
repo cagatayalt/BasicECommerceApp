@@ -12,9 +12,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.cagatayalt.github.simpleecommerceapp.R
 import com.cagatayalt.github.simpleecommerceapp.viewmodel.ProductViewModel
-import kotlinx.android.synthetic.main.fragment_basket.*
+import com.cagatayalt.github.simpleecommerceapp.databinding.FragmentBasketBinding
 
 class BasketFragment : Fragment() {
+    private var _binding: FragmentBasketBinding? = null
+    private val binding get() = _binding!!
 
     private val productViewModel: ProductViewModel by activityViewModels()
     private var basketRecyclerAdapter : BasketRecyclerAdapter? = null
@@ -46,35 +48,30 @@ class BasketFragment : Fragment() {
     }
 
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_basket, container, false)
+        _binding = FragmentBasketBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        basketRecyclerView.layoutManager = LinearLayoutManager(
+        binding.basketRecyclerView.layoutManager = LinearLayoutManager(
             activity?.baseContext)
 
-        ItemTouchHelper(swipeCallBack).attachToRecyclerView(basketRecyclerView)
+        ItemTouchHelper(swipeCallBack).attachToRecyclerView(binding.basketRecyclerView)
 
         productViewModel.basket.observe(viewLifecycleOwner, Observer {
             basketRecyclerAdapter = BasketRecyclerAdapter(it)
-            basketRecyclerView.adapter = basketRecyclerAdapter
+            binding.basketRecyclerView.adapter = basketRecyclerAdapter
 
 
             productViewModel.totalBasket.observe(viewLifecycleOwner, Observer {
-                totalBasketText.text = "Total Basket: ${it}"
+                binding.totalBasketText.text = "Total Basket: ${it}"
 
             })
 
@@ -82,7 +79,10 @@ class BasketFragment : Fragment() {
 
 
         })
+    }
 
-
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

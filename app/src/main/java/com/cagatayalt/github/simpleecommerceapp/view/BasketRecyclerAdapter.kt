@@ -3,37 +3,34 @@ package com.cagatayalt.github.simpleecommerceapp.view
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.ui.layout.Layout
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.cagatayalt.github.simpleecommerceapp.R
 import com.cagatayalt.github.simpleecommerceapp.model.Product
 
-import kotlinx.android.synthetic.main.basket_rv_row.view.*
+import com.cagatayalt.github.simpleecommerceapp.databinding.BasketRvRowBinding
 
 class BasketRecyclerAdapter(val basketList : List<Product>) : RecyclerView.Adapter<BasketRecyclerAdapter.BasketViewHolder>(){
 
-    class BasketViewHolder(itemView : View):RecyclerView.ViewHolder(itemView)
+    class BasketViewHolder(private val binding: BasketRvRowBinding): RecyclerView.ViewHolder(binding.root) {
+        fun bind(product: Product) {
+            binding.basketProductNameText.text = product.name
+            binding.basketProductPriceText.text = "Price: ${product.price}"
+            binding.basketCountText.text = "Count: ${product.count}"
+            Glide
+                .with(binding.root.context)
+                .load(product.url)
+                .into(binding.basketImageView)
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BasketViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(
-            R.layout.basket_rv_row,parent,false
-        )
-
-        return BasketViewHolder(view)
-
+        val binding = BasketRvRowBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return BasketViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: BasketViewHolder, position: Int) {
-
-        holder.itemView.basketProductNameText.text = basketList[position].name
-        holder.itemView.basketProductPriceText.text = "Price: ${basketList[position].price}"
-        holder.itemView.basketCountText.text = "Count: ${basketList[position].count}"
-        Glide
-            .with(holder.itemView.context)
-            .load(basketList[position].url)
-            .into(holder.itemView.basketImageView)
-
+        holder.bind(basketList[position])
     }
 
     override fun getItemCount(): Int {

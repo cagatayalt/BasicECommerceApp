@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.cagatayalt.github.simpleecommerceapp.R
 import com.cagatayalt.github.simpleecommerceapp.model.Product
-import kotlinx.android.synthetic.main.products_rv_row.view.*
+import com.cagatayalt.github.simpleecommerceapp.databinding.ProductsRvRowBinding
 
 class ProductRecyclerAdapter(
     val productList : List<Product>,
@@ -16,24 +16,25 @@ class ProductRecyclerAdapter(
     ): RecyclerView.Adapter<ProductRecyclerAdapter.ProductHolder>() {
 
 
-    class ProductHolder(itemView : View): RecyclerView.ViewHolder(itemView) {
-
+    class ProductHolder(private val binding: ProductsRvRowBinding): RecyclerView.ViewHolder(binding.root) {
+        fun bind(product: Product, listener: Listener) {
+            binding.productName.text = product.name
+            binding.productPrice.text = product.price
+            Glide.with(binding.root.context).load(product.url).into(binding.productImage)
+            binding.addBasketButton.setOnClickListener {
+                Toast.makeText(it.context, "${product.name} added to Basket", Toast.LENGTH_LONG).show()
+                listener.onItemClick(product)
+            }
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.products_rv_row,parent,false)
-        return ProductHolder(view)
+        val binding = ProductsRvRowBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ProductHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ProductHolder, position: Int) {
-        holder.itemView.productName.text = productList[position].name
-        holder.itemView.productPrice.text = productList[position].price
-        Glide.with(holder.itemView.context).load(productList[position].url).into(holder.itemView.productImage)
-        holder.itemView.addBasketButton.setOnClickListener{
-            Toast.makeText(it.context,"${productList[position].name} added to Basket ",Toast.LENGTH_LONG).show()
-            listener.onItemClick(productList[position])
-
-        }
+        holder.bind(productList[position], listener)
     }
 
     override fun getItemCount(): Int {

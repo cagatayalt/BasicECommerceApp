@@ -11,28 +11,23 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.cagatayalt.github.simpleecommerceapp.R
 import com.cagatayalt.github.simpleecommerceapp.model.Product
 import com.cagatayalt.github.simpleecommerceapp.viewmodel.ProductViewModel
-import kotlinx.android.synthetic.main.fragment_product.*
+import com.cagatayalt.github.simpleecommerceapp.databinding.FragmentProductBinding
 
 
 class ProductsFragment : Fragment() , ProductRecyclerAdapter.Listener{
-
-
+    private var _binding: FragmentProductBinding? = null
+    private val binding get() = _binding!!
 
     private val productViewModel : ProductViewModel by activityViewModels()
     private var productRecyclerAdapter : ProductRecyclerAdapter? = null
 
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_product, container, false)
+        _binding = FragmentProductBinding.inflate(inflater, container, false)
+        return binding.root
 
 
 
@@ -45,7 +40,7 @@ class ProductsFragment : Fragment() , ProductRecyclerAdapter.Listener{
         super.onViewCreated(view, savedInstanceState)
 
 
-        productsRV.layoutManager = GridLayoutManager(activity?.baseContext,2)
+        binding.productsRV.layoutManager = GridLayoutManager(activity?.baseContext,2)
 
 
 
@@ -55,7 +50,7 @@ class ProductsFragment : Fragment() , ProductRecyclerAdapter.Listener{
         productViewModel.productList.observe(viewLifecycleOwner, Observer {
             productRecyclerAdapter = ProductRecyclerAdapter(it,this)
 
-            productsRV.adapter = productRecyclerAdapter
+            binding.productsRV.adapter = productRecyclerAdapter
 
 
         })
@@ -64,8 +59,10 @@ class ProductsFragment : Fragment() , ProductRecyclerAdapter.Listener{
 
     override fun onItemClick(product: Product) {
         productViewModel.addToBasket(product)
-
     }
 
-
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }

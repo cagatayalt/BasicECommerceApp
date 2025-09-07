@@ -46,7 +46,7 @@ class ProductViewModel : ViewModel() {
 
     fun addToBasket(product: Product) {
         if (basket.value != null) {
-            val arrayList = ArrayList(basket.value)
+            val arrayList = ArrayList(basket.value!!)
 
             if( arrayList.contains(product)) {
                 val indexOfFirst = arrayList.indexOfFirst { it == product }
@@ -99,7 +99,7 @@ class ProductViewModel : ViewModel() {
 
     fun deleteProductFromBasket(product : Product) {
         if (basket.value != null) {
-            val arrayList = ArrayList(basket.value)
+            val arrayList = ArrayList(basket.value!!)
             arrayList.remove(product)
             basket.value = arrayList
             refreshTotalValue(arrayList)
